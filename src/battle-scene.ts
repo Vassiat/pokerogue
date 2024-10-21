@@ -1,5 +1,5 @@
 import Phaser from "phaser";
-import UI from "#app/ui/ui";
+import UI, { Mode } from "#app/ui/ui";
 import Pokemon, { EnemyPokemon, PlayerPokemon } from "#app/field/pokemon";
 import PokemonSpecies, { allSpecies, getPokemonSpecies, PokemonSpeciesFilter } from "#app/data/pokemon-species";
 import { Constructor, isNullOrUndefined, randSeedInt } from "#app/utils";
@@ -95,6 +95,7 @@ import { ExpPhase } from "#app/phases/exp-phase";
 import { ShowPartyExpBarPhase } from "#app/phases/show-party-exp-bar-phase";
 import { MysteryEncounterMode } from "#enums/mystery-encounter-mode";
 import { ExpGainsSpeed } from "#enums/exp-gains-speed";
+import MenuUiHandler from "./ui/menu-ui-handler";
 
 export const bypassLogin = import.meta.env.VITE_BYPASS_LOGIN === "1";
 
@@ -384,6 +385,7 @@ export default class BattleScene extends SceneBase {
 
   update() {
     this.ui?.update();
+    (this.ui.handlers[Mode.MENU] as MenuUiHandler).poketch.update();
   }
 
   launchBattle() {

@@ -13,6 +13,7 @@ import { GameDataType } from "#enums/game-data-type";
 import BgmBar from "#app/ui/bgm-bar";
 import AwaitableUiHandler from "./awaitable-ui-handler";
 import { SelectModifierPhase } from "#app/phases/select-modifier-phase";
+import { poketch } from "./poketch/poketch";
 
 enum MenuOptions {
   GAME_SETTINGS,
@@ -60,6 +61,7 @@ export default class MenuUiHandler extends MessageUiHandler {
   protected scale: number = 0.1666666667;
 
   public bgmBar: BgmBar;
+  public poketch: poketch;
 
   constructor(scene: BattleScene, mode: Mode | null = null) {
     super(scene, mode);
@@ -87,6 +89,8 @@ export default class MenuUiHandler extends MessageUiHandler {
     this.bgmBar = new BgmBar(this.scene);
     this.bgmBar.setup();
 
+    this.poketch = new poketch(this.scene, 4, this.bgmBar.getBounds().height * this.scale + this.bgmBar.y + 10, 120, 45);
+
     ui.bgmBar = this.bgmBar;
 
     this.menuContainer = this.scene.add.container(1, -(this.scene.game.canvas.height / 6) + 1);
@@ -97,6 +101,7 @@ export default class MenuUiHandler extends MessageUiHandler {
     this.menuOverlay.setName("menu-overlay");
     this.menuOverlay.setOrigin(0, 0);
     this.menuContainer.add(this.menuOverlay);
+    this.menuContainer.add(this.poketch);
 
     this.menuContainer.add(this.bgmBar);
 
@@ -450,6 +455,10 @@ export default class MenuUiHandler extends MessageUiHandler {
   processInput(button: Button): boolean {
     const ui = this.getUi();
 
+    if (this.poketch.isSelect) {
+      return this.poketch.processInput(button);
+    }
+
     let success = false;
     let error = false;
 
@@ -634,6 +643,8 @@ export default class MenuUiHandler extends MessageUiHandler {
           success = this.setCursor(0);
         }
         break;
+      case Button.LEFT:
+        this.poketch.select();
       }
     }
 
@@ -687,6 +698,7 @@ export default class MenuUiHandler extends MessageUiHandler {
     this.menuContainer.setVisible(false);
     this.bgmBar.toggleBgmBar(false);
     this.eraseCursor();
+    this.poketch.clear();
   }
 
   eraseCursor() {

@@ -13,7 +13,7 @@ import { Unlockables } from "#app/system/unlockables";
 import { GameModes, getGameMode } from "#app/game-mode";
 import { BattleType } from "#app/battle";
 import TrainerData from "#app/system/trainer-data";
-import { trainerConfigs } from "#app/data/trainer-config";
+import { trainerConfigs, TrainerSlot } from "#app/data/trainer-config";
 import { resetSettings, setSetting, SettingKeys } from "#app/system/settings/settings";
 import { achvs } from "#app/system/achv";
 import EggData from "#app/system/egg-data";
@@ -136,6 +136,7 @@ export interface SessionSaveData {
   challenges: ChallengeData[];
   mysteryEncounterType: MysteryEncounterType | -1; // Only defined when current wave is ME,
   mysteryEncounterSaveData: MysteryEncounterSaveData;
+  leaderHitory: TrainerSlot[];
 }
 
 interface Unlocks {
