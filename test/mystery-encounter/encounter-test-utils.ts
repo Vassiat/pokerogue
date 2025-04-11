@@ -9,7 +9,7 @@ import {
   MysteryEncounterRewardsPhase,
 } from "#app/phases/mystery-encounter-phases";
 import { VictoryPhase } from "#app/phases/victory-phase";
-import type MessageUiHandler from "#app/ui/message-ui-handler";
+import type BattleMessageUiHandler from "#app/ui/battle-message-ui-handler";
 import type MysteryEncounterUiHandler from "#app/ui/mystery-encounter-ui-handler";
 import type PartyUiHandler from "#app/ui/party-ui-handler";
 import type OptionSelectUiHandler from "#app/ui/settings/option-select-ui-handler";
@@ -78,13 +78,13 @@ export async function runMysteryEncounterToEnd(
 
     // Handle end of battle trainer messages
     game.onNextPrompt("TrainerVictoryPhase", Mode.MESSAGE, () => {
-      const uiHandler = game.scene.ui.getHandler<MessageUiHandler>();
+      const uiHandler = game.scene.ui.getHandler<BattleMessageUiHandler>();
       uiHandler.processInput(Button.ACTION);
     });
 
     // Handle egg hatch dialogue
     game.onNextPrompt("EggLapsePhase", Mode.MESSAGE, () => {
-      const uiHandler = game.scene.ui.getHandler<MessageUiHandler>();
+      const uiHandler = game.scene.ui.getHandler<BattleMessageUiHandler>();
       uiHandler.processInput(Button.ACTION);
     });
 
@@ -104,7 +104,7 @@ export async function runSelectMysteryEncounterOption(
     "MessagePhase",
     Mode.MESSAGE,
     () => {
-      const uiHandler = game.scene.ui.getHandler<MessageUiHandler>();
+      const uiHandler = game.scene.ui.getHandler<BattleMessageUiHandler>();
       uiHandler.processInput(Button.ACTION);
     },
     () => game.isCurrentPhase(MysteryEncounterOptionSelectedPhase),

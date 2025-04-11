@@ -1,7 +1,7 @@
 import type Phaser from "phaser";
 import { Mode } from "./ui/ui";
 import type { InputsController } from "./inputs-controller";
-import type MessageUiHandler from "./ui/message-ui-handler";
+import type BattleMessageUiHandler from "./ui/battle-message-ui-handler";
 import StarterSelectUiHandler from "./ui/starter-select-ui-handler";
 import { Setting, SettingKeys, settingIndex } from "./system/settings/settings";
 import SettingsUiHandler from "./ui/settings/settings-ui-handler";
@@ -177,7 +177,7 @@ export class UiInputs {
     }
     switch (globalScene.ui?.getMode()) {
       case Mode.MESSAGE:
-        const messageHandler = globalScene.ui.getHandler<MessageUiHandler>();
+        const messageHandler = globalScene.ui.getHandler<BattleMessageUiHandler>();
         if (!messageHandler.pendingPrompt || messageHandler.isTextAnimationInProgress()) {
           return;
         }
