@@ -5,6 +5,28 @@ import i18next from "i18next";
 import { Button } from "#enums/buttons";
 import { globalScene } from "#app/global-scene";
 
+type ConfirmConfig =
+  | [
+      () => void, // onSummary
+      () => void, // onPokedex
+      () => void, // onYesFullParty
+      () => void, // onNoFullParty
+      "fullParty",
+      (boolean | null)?, // switchCheck (optional)
+      (number | null)?, // xOffset (optional)
+      (number | null)?, // yOffset (optional)
+      (number | null)?, // delay (optional)
+    ]
+  | [
+      () => void, // onYes
+      () => void, // onNo
+      (boolean | null)?, // switchCheck (optional)
+      (number | null)?, // xOffset (optional)
+      (number | null)?, // yOffset (optional)
+      (number | null)?, // delay (optional)
+      boolean?, // noCancel (optional)
+    ];
+
 export default class ConfirmUiHandler extends AbstractOptionSelectUiHandler {
   public static readonly windowWidth: number = 48;
 
@@ -19,7 +41,9 @@ export default class ConfirmUiHandler extends AbstractOptionSelectUiHandler {
     return ConfirmUiHandler.windowWidth;
   }
 
-  show(args: any[]): boolean {
+  show(
+    ...args: [Omit<OptionSelectConfig, "options" | "maxOptions" | "noCancel" | "supportHover">, ConfirmConfig]
+  ): boolean {
     if (
       args.length === 5 &&
       args[0] instanceof Function &&
@@ -59,15 +83,15 @@ export default class ConfirmUiHandler extends AbstractOptionSelectUiHandler {
             },
           },
         ],
-        delay: args.length >= 9 && args[8] !== null ? (args[8] as number) : 0,
+        delay: args.length >= 9 && args[8] !== null ? args[8] : 0,
       };
 
-      super.show([config]);
+      super.show(config);
 
-      this.switchCheck = args.length >= 6 && args[5] !== null && (args[5] as boolean);
+      this.switchCheck = args.length >= 6 && typeof args[5] === "boolean" && args[5];
 
-      const xOffset = args.length >= 7 && args[6] !== null ? (args[6] as number) : 0;
-      const yOffset = args.length >= 8 && args[7] !== null ? (args[7] as number) : 0;
+      const xOffset: number = args.length >= 7 && typeof args[6] === "number" ? args[6] : 0;
+      const yOffset: number = args.length >= 8 && typeof args[7] === "number" ? args[7] : 0;
 
       this.optionSelectContainer.setPosition(globalScene.game.canvas.width / 6 - 1 + xOffset, -48 + yOffset);
 
@@ -92,16 +116,16 @@ export default class ConfirmUiHandler extends AbstractOptionSelectUiHandler {
             },
           },
         ],
-        delay: args.length >= 6 && args[5] !== null ? (args[5] as number) : 0,
-        noCancel: args.length >= 7 && args[6] !== null ? (args[6] as boolean) : false,
+        delay: args.length >= 6 && typeof args[5] === "number" ? args[5] : 0,
+        noCancel: args.length >= 7 && typeof args[6] === "boolean" ? args[6] : false,
       };
 
-      super.show([config]);
+      super.show(config);
 
-      this.switchCheck = args.length >= 3 && args[2] !== null && (args[2] as boolean);
+      this.switchCheck = args.length >= 3 && typeof args[2] === "boolean" && args[2];
 
-      const xOffset = args.length >= 4 && args[3] !== null ? (args[3] as number) : 0;
-      const yOffset = args.length >= 5 && args[4] !== null ? (args[4] as number) : 0;
+      const xOffset: number = args.length >= 4 && typeof args[3] === "number" ? args[3] : 0;
+      const yOffset: number = args.length >= 5 && typeof args[4] === "number" ? args[4] : 0;
 
       this.optionSelectContainer.setPosition(globalScene.game.canvas.width / 6 - 1 + xOffset, -48 + yOffset);
 

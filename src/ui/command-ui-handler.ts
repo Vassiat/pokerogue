@@ -66,7 +66,7 @@ export default class CommandUiHandler extends UiHandler {
     }
   }
 
-  show(args: any[]): boolean {
+  show(...args: [number]): boolean {
     super.show(args);
 
     this.fieldIndex = args.length ? (args[0] as number) : 0;

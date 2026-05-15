@@ -1,4 +1,4 @@
-import type { InputFieldConfig } from "./form-modal-ui-handler";
+import type { FormModalConfig, InputFieldConfig } from "./form-modal-ui-handler";
 import { FormModalUiHandler } from "./form-modal-ui-handler";
 import type { ModalConfig } from "./modal-ui-handler";
 import i18next from "i18next";
@@ -77,11 +77,11 @@ export default class TestDialogueUiHandler extends FormModalUiHandler {
     return [{ label: "Dialogue" }];
   }
 
-  show(args: any[]): boolean {
+  show(...args: [FormModalConfig, PlayerPokemon | string]): boolean {
     const ui = this.getUi();
     const hasTitle = !!this.getModalTitle();
     this.updateFields(this.getInputFieldConfigs(), hasTitle);
-    this.updateContainer(args[0] as ModalConfig);
+    this.updateContainer(args[0]);
     const input = this.inputs[0];
     input.setMaxLength(255);
 
@@ -137,13 +137,13 @@ export default class TestDialogueUiHandler extends FormModalUiHandler {
       }
     });
 
-    if (super.show(args)) {
+    if (super.show(args[0])) {
       const config = args[0] as ModalConfig;
       this.inputs[0].resize(1150, 116);
       this.inputContainers[0].list[0].width = 200;
       if (args[1] && typeof (args[1] as PlayerPokemon).getNameToRender === "function") {
         this.inputs[0].text = (args[1] as PlayerPokemon).getNameToRender();
-      } else {
+      } else if (typeof args[1] === "string") {
         this.inputs[0].text = args[1];
       }
       this.submitAction = _ => {

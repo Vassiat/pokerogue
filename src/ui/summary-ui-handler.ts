@@ -116,7 +116,7 @@ export default class SummaryUiHandler extends UiHandler {
   private moveSelect: boolean;
   private moveCursor: number;
   private selectedMoveIndex: number;
-  private selectCallback: Function | null;
+  private selectCallback?: Function | null;
 
   constructor() {
     super(Mode.SUMMARY);
@@ -309,7 +309,7 @@ export default class SummaryUiHandler extends UiHandler {
     return `summary_${Page[page].toLowerCase()}`;
   }
 
-  show(args: any[]): boolean {
+  show(...args: [PlayerPokemon, SummaryUiMode?, (Page | Move)?, (Function | null)?, boolean?]): boolean {
     super.show(args);
 
     /* args[] information
@@ -616,7 +616,8 @@ export default class SummaryUiHandler extends UiHandler {
             if ((isDown && partyMemberIndex < party.length - 1) || (!isDown && partyMemberIndex)) {
               const page = this.cursor;
               this.clear();
-              this.show([party[partyMemberIndex + (isDown ? 1 : -1)], this.summaryUiMode, page]);
+              const playerPokemon = party[partyMemberIndex + (isDown ? 1 : -1)];
+              this.show(playerPokemon, this.summaryUiMode, page);
             }
             break;
           }

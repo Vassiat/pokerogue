@@ -662,16 +662,21 @@ export default class PokedexPageUiHandler extends MessageUiHandler {
     this.previousStarterAttributes = [];
   }
 
-  show(args: any[]): boolean {
+  show(
+    ...args: [(PokemonSpecies | "refresh")?, (StarterAttributes | null)?, (Species[] | null)?, null?, (() => void)?]
+  ): boolean {
     // Allow the use of candies if we are in one of the whitelisted phases
     this.canUseCandies = ["TitlePhase", "SelectStarterPhase", "CommandPhase"].includes(
       globalScene.getCurrentPhase()?.constructor.name ?? "",
     );
 
-    if (args.length >= 1 && args[0] === "refresh") {
-      return false;
+    if (args.length >= 1) {
+      if (args[0] === "refresh") {
+        return false;
+      } else if (args[0] instanceof Object) {
+        this.species = args[0];
+      }
     }
-    this.species = args[0];
     this.savedStarterAttributes = args[1] ?? {
       shiny: false,
       female: true,
@@ -689,7 +694,7 @@ export default class PokedexPageUiHandler extends MessageUiHandler {
     this.moveInfoOverlay.clear(); // clear this when removing a menu; the cancel button doesn't seem to trigger this automatically on controllers
     this.infoOverlay.clear();
 
-    super.show(args);
+    super.show();
 
     this.starterSelectContainer.setVisible(true);
     this.getUi().bringToTop(this.starterSelectContainer);

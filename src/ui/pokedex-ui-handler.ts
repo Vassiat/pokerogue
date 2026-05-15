@@ -609,7 +609,7 @@ export default class PokedexUiHandler extends MessageUiHandler {
     this.starterSelectContainer.bringToTop(this.pokemonFormText);
   }
 
-  show(args: any[]): boolean {
+  show(...args: ["refresh"?]): boolean {
     if (!this.starterPreferences) {
       this.starterPreferences = loadStarterPreferences();
     }
@@ -621,7 +621,7 @@ export default class PokedexUiHandler extends MessageUiHandler {
       return false;
     }
 
-    super.show(args);
+    super.show();
 
     this.starterSelectContainer.setVisible(true);
 

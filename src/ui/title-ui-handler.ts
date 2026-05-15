@@ -12,6 +12,7 @@ import type { Species } from "#enums/species";
 import { getPokemonSpecies } from "#app/data/pokemon-species";
 import { PlayerGender } from "#enums/player-gender";
 import { timedEventManager } from "#app/global-event-manager";
+import type { OptionSelectConfig } from "./abstact-option-select-ui-handler";
 
 export default class TitleUiHandler extends OptionSelectUiHandler {
   /** If the stats can not be retrieved, use this fallback value */
@@ -125,7 +126,7 @@ export default class TitleUiHandler extends OptionSelectUiHandler {
     }
   }
 
-  show(args: any[]): boolean {
+  show(...args: [OptionSelectConfig]): boolean {
     const ret = super.show(args);
 
     if (ret) {

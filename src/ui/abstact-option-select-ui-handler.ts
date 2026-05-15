@@ -186,14 +186,14 @@ export default abstract class AbstractOptionSelectUiHandler extends UiHandler {
     });
   }
 
-  show(args: any[]): boolean {
+  show(...args: [OptionSelectConfig, ...any]): boolean {
     if (!args.length || !args[0].hasOwnProperty("options") || !args[0].options.length) {
       return false;
     }
 
-    super.show(args);
+    super.show();
 
-    this.config = args[0] as OptionSelectConfig;
+    this.config = args[0];
     this.setupOptions();
 
     globalScene.ui.bringToTop(this.optionSelectContainer);

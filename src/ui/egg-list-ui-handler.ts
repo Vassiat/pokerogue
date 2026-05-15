@@ -109,8 +109,8 @@ export default class EggListUiHandler extends MessageUiHandler {
     this.cursor = -1;
   }
 
-  show(args: any[]): boolean {
-    super.show(args);
+  show(): boolean {
+    super.show();
 
     this.initEggIcons();
 

@@ -75,8 +75,8 @@ export default class RunHistoryUiHandler extends MessageUiHandler {
     globalScene.loadAtlas("rival_m", "trainer");
   }
 
-  override show(args: any[]): boolean {
-    super.show(args);
+  override show(): boolean {
+    super.show();
 
     this.getUi().bringToTop(this.runSelectContainer);
     this.runSelectContainer.setVisible(true);
@@ -110,7 +110,7 @@ export default class RunHistoryUiHandler extends MessageUiHandler {
       if (button === Button.ACTION) {
         const cursor = this.cursor + this.scrollCursor;
         if (this.runs[cursor]) {
-          globalScene.ui.setOverlayMode(Mode.RUN_INFO, this.runs[cursor].entryData, RunDisplayMode.RUN_HISTORY, true);
+          globalScene.ui.setOverlayMode(Mode.RUN_INFO, this.runs[cursor].entryData, RunDisplayMode.RUN_HISTORY);
         } else {
           return false;
         }

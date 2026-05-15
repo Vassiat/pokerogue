@@ -116,7 +116,7 @@ export default class FightUiHandler extends UiHandler implements InfoToggle {
     globalScene.addInfoToggle(this);
   }
 
-  show(args: any[]): boolean {
+  show(...args: [number, Command?]): boolean {
     super.show(args);
 
     this.fieldIndex = args.length ? (args[0] as number) : 0;

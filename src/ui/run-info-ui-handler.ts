@@ -1,6 +1,6 @@
 import { GameModes } from "../game-mode";
 import UiHandler from "./ui-handler";
-import type { SessionSaveData } from "../system/game-data";
+import type { RunEntry, SessionSaveData } from "../system/game-data";
 import { TextStyle, addTextObject, addBBCodeTextObject, getTextColor } from "./text";
 import { Mode } from "./ui";
 import { addWindow } from "./ui-theme";
@@ -41,6 +41,11 @@ enum RunInfoUiMode {
 export enum RunDisplayMode {
   RUN_HISTORY,
   SESSION_PREVIEW,
+}
+
+interface args0 extends SessionSaveData {
+  isVictory?: boolean;
+  entry?: RunEntry;
 }
 
 /**
@@ -90,8 +95,8 @@ export default class RunInfoUiHandler extends UiHandler {
    * Party Container:
    * this.isVictory === true --> Hall of Fame Container:
    */
-  override show(args: any[]): boolean {
-    super.show(args);
+  override show(...args: [SessionSaveData | RunEntry, RunDisplayMode]): boolean {
+    super.show();
 
     const gameStatsBg = globalScene.add.rectangle(
       0,
@@ -105,11 +110,30 @@ export default class RunInfoUiHandler extends UiHandler {
 
     const run = args[0];
     this.runDisplayMode = args[1];
+    // if (this.runDisplayMode === RunDisplayMode.RUN_HISTORY) {
+    //   this.runInfo = globalScene.gameData.parseSessionData(JSON.stringify(run.entry));
+    //   this.isVictory = run.isVictory ?? false;
+    // } else if (this.runDisplayMode === RunDisplayMode.SESSION_PREVIEW) {
+    //   this.runInfo = args[0];
+    // }
     if (this.runDisplayMode === RunDisplayMode.RUN_HISTORY) {
-      this.runInfo = globalScene.gameData.parseSessionData(JSON.stringify(run.entry));
-      this.isVictory = run.isVictory ?? false;
+      if ("entry" in run && "isVictory" in run) {
+        // Type guard usando 'in'
+        const runEntry = run as RunEntry;
+        this.runInfo = globalScene.gameData.parseSessionData(JSON.stringify(runEntry.entry));
+        this.isVictory = runEntry.isVictory ?? false;
+      } else {
+        console.error("Error: wait a RunEntry but received other.");
+        return false;
+      }
     } else if (this.runDisplayMode === RunDisplayMode.SESSION_PREVIEW) {
-      this.runInfo = args[0];
+      if ("seed" in run) {
+        // Type guard usando 'in'
+        this.runInfo = run as SessionSaveData;
+      } else {
+        console.error("Error: wait a SessionSaveData but received other.");
+        return false;
+      }
     }
     // Assigning information necessary for the UI's creation
 

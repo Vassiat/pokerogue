@@ -227,8 +227,8 @@ export default class AbstractSettingsUiHandler extends MessageUiHandler {
    * @param args - Arguments to be passed to the show method.
    * @returns `true` if successful.
    */
-  show(args: any[]): boolean {
-    super.show(args);
+  show(): boolean {
+    super.show();
     this.updateBindings();
 
     const settings: object = localStorage.hasOwnProperty(this.localStorageKey)

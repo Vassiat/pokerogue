@@ -113,8 +113,8 @@ export abstract class FormModalUiHandler extends ModalUiHandler {
     });
   }
 
-  show(args: any[]): boolean {
-    if (super.show(args)) {
+  show(...args: [FormModalConfig, ...any]): boolean {
+    if (super.show(args[0])) {
       this.inputContainers.map(ic => ic.setVisible(true));
 
       const config = args[0] as FormModalConfig;

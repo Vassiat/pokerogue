@@ -79,12 +79,12 @@ export default class SaveSlotSelectUiHandler extends MessageUiHandler {
     this.sessionSlots = [];
   }
 
-  show(args: any[]): boolean {
+  show(...args: [SaveSlotUiMode, SaveSlotSelectCallback]): boolean {
     if (args.length < 2 || !(args[1] instanceof Function)) {
       return false;
     }
 
-    super.show(args);
+    super.show();
 
     this.uiMode = args[0] as SaveSlotUiMode;
     this.saveSlotSelectCallback = args[1] as SaveSlotSelectCallback;

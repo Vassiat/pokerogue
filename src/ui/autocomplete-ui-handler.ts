@@ -1,6 +1,10 @@
 import { Button } from "#enums/buttons";
-import AbstractOptionSelectUiHandler from "./abstact-option-select-ui-handler";
+import AbstractOptionSelectUiHandler, { type OptionSelectConfig } from "./abstact-option-select-ui-handler";
 import { Mode } from "./ui";
+
+export interface AutoCompleteConfig extends OptionSelectConfig {
+  modalContainer: Phaser.GameObjects.Container;
+}
 
 export default class AutoCompleteUiHandler extends AbstractOptionSelectUiHandler {
   modalContainer: Phaser.GameObjects.Container;
@@ -12,10 +16,10 @@ export default class AutoCompleteUiHandler extends AbstractOptionSelectUiHandler
     return 64;
   }
 
-  show(args: any[]): boolean {
+  show(...args: [AutoCompleteConfig]): boolean {
     if (args[0].modalContainer) {
       const { modalContainer } = args[0];
-      const show = super.show(args);
+      const show = super.show(args[0]);
       this.modalContainer = modalContainer;
       this.setupOptions();
 

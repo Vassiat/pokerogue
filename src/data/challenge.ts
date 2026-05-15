@@ -1265,7 +1265,7 @@ export function checkStarterValidForChallenge(species: PokemonSpecies, props: De
 function checkSpeciesValidForChallenge(species: PokemonSpecies, props: DexAttrProps, soft: boolean) {
   const isValidForChallenge = new Utils.BooleanHolder(true);
   applyChallenges(ChallengeType.STARTER_CHOICE, species, isValidForChallenge, props);
-  if (!soft || !pokemonFormChanges.hasOwnProperty(species.speciesId)) {
+  if (!soft || !pokemonFormChanges.(species.speciesId)) {
     return isValidForChallenge.value;
   }
   // If the form in props is valid, return true before checking other form changes

@@ -137,8 +137,8 @@ export default class LoginFormUiHandler extends FormModalUiHandler {
     return inputFieldConfigs;
   }
 
-  override show(args: any[]): boolean {
-    if (super.show(args)) {
+  override show(...args: [ModalConfig]): boolean {
+    if (super.show(args[0])) {
       const config = args[0] as ModalConfig;
       this.processExternalProvider(config);
       const originalLoginAction = this.submitAction;

@@ -309,8 +309,8 @@ export default class GameStatsUiHandler extends UiHandler {
     this.gameStatsContainer.setVisible(false);
   }
 
-  show(args: any[]): boolean {
-    super.show(args);
+  show(): boolean {
+    super.show();
 
     this.setCursor(0);
 

@@ -56,6 +56,7 @@ import MysteryEncounterUiHandler from "./mystery-encounter-ui-handler";
 import PokedexScanUiHandler from "./pokedex-scan-ui-handler";
 import PokedexPageUiHandler from "./pokedex-page-ui-handler";
 import { NavigationManager } from "./settings/navigationMenu";
+import type UiHandler from "./ui-handler";
 
 export enum Mode {
   MESSAGE,
@@ -277,7 +278,7 @@ export default class UI extends Phaser.GameObjects.Container {
     globalScene.uiContainer.add(this.tooltipContainer);
   }
 
-  getHandler<H extends (typeof this.handlers)[Mode]>(): H {
+  getHandler<H extends (typeof this.handlers)[Mode] | UiHandler = UiHandler>(): H {
     return this.handlers[this.mode] as H;
   }
 
@@ -566,12 +567,12 @@ export default class UI extends Phaser.GameObjects.Container {
     });
   }
 
-  private setModeInternal(
-    mode: Mode,
+  private setModeInternal<T extends Mode>(
+    mode: T,
     clear: boolean,
     forceTransition: boolean,
     chainMode: boolean,
-    args: any[],
+    args: Parameters<(typeof this.handlers)[T]["show"]>,
   ): Promise<void> {
     return new Promise(resolve => {
       if (this.mode === mode && !forceTransition) {
@@ -619,19 +620,22 @@ export default class UI extends Phaser.GameObjects.Container {
     return this.mode;
   }
 
-  setMode(mode: Mode, ...args: any[]): Promise<void> {
+  setMode<T extends Mode>(mode: T, ...args: Parameters<(typeof this.handlers)[T]["show"]>): Promise<void> {
     return this.setModeInternal(mode, true, false, false, args);
   }
 
-  setModeForceTransition(mode: Mode, ...args: any[]): Promise<void> {
+  setModeForceTransition<T extends Mode>(
+    mode: T,
+    ...args: Parameters<(typeof this.handlers)[T]["show"]>
+  ): Promise<void> {
     return this.setModeInternal(mode, true, true, false, args);
   }
 
-  setModeWithoutClear(mode: Mode, ...args: any[]): Promise<void> {
+  setModeWithoutClear<T extends Mode>(mode: T, ...args: Parameters<(typeof this.handlers)[T]["show"]>): Promise<void> {
     return this.setModeInternal(mode, false, false, false, args);
   }
 
-  setOverlayMode(mode: Mode, ...args: any[]): Promise<void> {
+  setOverlayMode<T extends Mode>(mode: T, ...args: Parameters<(typeof this.handlers)[T]["show"]>): Promise<void> {
     return this.setModeInternal(mode, false, false, true, args);
   }
 

@@ -329,8 +329,8 @@ export default class EggGachaUiHandler extends MessageUiHandler {
     this.setCursor(0);
   }
 
-  show(args: any[]): boolean {
-    super.show(args);
+  show(): boolean {
+    super.show();
 
     this.getUi().showText(this.defaultText, 0);
 

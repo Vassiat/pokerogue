@@ -179,11 +179,11 @@ export default class PartyUiHandler extends MessageUiHandler {
   private transferAll: boolean;
 
   private lastCursor = 0;
-  private selectCallback: PartySelectCallback | PartyModifierTransferSelectCallback | null;
+  private selectCallback?: PartySelectCallback | PartyModifierTransferSelectCallback | null;
   private selectFilter: PokemonSelectFilter | PokemonModifierTransferSelectFilter;
   private moveSelectFilter: PokemonMoveSelectFilter;
   private tmMoveId: Moves;
-  private showMovePp: boolean;
+  private showMovePp?: boolean;
 
   private iconAnimHandler: PokemonIconAnimHandler;
 
@@ -331,7 +331,17 @@ export default class PartyUiHandler extends MessageUiHandler {
     this.partySlots = [];
   }
 
-  show(args: any[]): boolean {
+  show(
+    ...args: [
+      PartyUiMode?,
+      number?,
+      (PartySelectCallback | PartyModifierTransferSelectCallback | null)?,
+      PokemonSelectFilter?,
+      PokemonMoveSelectFilter?,
+      Moves?,
+      boolean?,
+    ]
+  ): boolean {
     if (!args.length || this.active) {
       return false;
     }

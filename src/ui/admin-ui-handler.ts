@@ -1,7 +1,7 @@
 import { Button } from "#app/enums/buttons";
 import { pokerogueApi } from "#app/plugins/api/pokerogue-api";
 import { formatText } from "#app/utils";
-import type { InputFieldConfig } from "./form-modal-ui-handler";
+import type { FormModalConfig, InputFieldConfig } from "./form-modal-ui-handler";
 import { FormModalUiHandler } from "./form-modal-ui-handler";
 import type { ModalConfig } from "./modal-ui-handler";
 import { TextStyle } from "./text";
@@ -103,9 +103,9 @@ export default class AdminUiHandler extends FormModalUiHandler {
     return false;
   }
 
-  show(args: any[]): boolean {
-    this.config = args[0] as ModalConfig; // config
-    this.adminMode = args[1] as AdminMode; // admin mode
+  show(...args: [FormModalConfig, AdminMode, AdminSearchInfo?, boolean?]): boolean {
+    this.config = args[0]; // config
+    this.adminMode = args[1]; // admin mode
     this.adminResult = args[2] ?? {
       username: "",
       discordId: "",
@@ -135,7 +135,7 @@ export default class AdminUiHandler extends FormModalUiHandler {
       this.errorMessage.setShadowColor(this.getTextColor(TextStyle.SUMMARY_GREEN, true));
     }
 
-    if (super.show(args)) {
+    if (super.show(args[0])) {
       this.populateFields(this.adminMode, this.adminResult);
       const originalSubmitAction = this.submitAction;
       this.submitAction = _ => {

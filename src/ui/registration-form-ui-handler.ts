@@ -1,4 +1,4 @@
-import type { InputFieldConfig } from "./form-modal-ui-handler";
+import type { FormModalConfig, InputFieldConfig } from "./form-modal-ui-handler";
 import { FormModalUiHandler } from "./form-modal-ui-handler";
 import type { ModalConfig } from "./modal-ui-handler";
 import { Mode } from "./ui";
@@ -92,9 +92,9 @@ export default class RegistrationFormUiHandler extends FormModalUiHandler {
     this.modalContainer.add(label);
   }
 
-  show(args: any[]): boolean {
-    if (super.show(args)) {
-      const config = args[0] as ModalConfig;
+  show(...args: [FormModalConfig]): boolean {
+    if (super.show(args[0])) {
+      const config = args[0];
 
       const originalRegistrationAction = this.submitAction;
       this.submitAction = _ => {

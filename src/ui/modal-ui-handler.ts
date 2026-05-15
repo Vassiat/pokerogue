@@ -7,6 +7,7 @@ import { globalScene } from "#app/global-scene";
 
 export interface ModalConfig {
   buttonActions: Function[];
+  fadeOut?: () => void;
 }
 
 export abstract class ModalUiHandler extends UiHandler {
@@ -95,7 +96,7 @@ export abstract class ModalUiHandler extends UiHandler {
     this.modalContainer.add(buttonContainer);
   }
 
-  show(args: any[]): boolean {
+  show(...args: [ModalConfig]): boolean {
     if (args.length >= 1 && "buttonActions" in args[0]) {
       super.show(args);
       if (args[0].hasOwnProperty("fadeOut") && typeof args[0].fadeOut === "function") {
@@ -124,7 +125,7 @@ export abstract class ModalUiHandler extends UiHandler {
         });
       }
 
-      const config = args[0] as ModalConfig;
+      const config = args[0];
 
       this.updateContainer(config);
 

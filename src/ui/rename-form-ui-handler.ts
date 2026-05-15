@@ -1,4 +1,4 @@
-import type { InputFieldConfig } from "./form-modal-ui-handler";
+import type { FormModalConfig, InputFieldConfig } from "./form-modal-ui-handler";
 import { FormModalUiHandler } from "./form-modal-ui-handler";
 import type { ModalConfig } from "./modal-ui-handler";
 import i18next from "i18next";
@@ -34,12 +34,12 @@ export default class RenameFormUiHandler extends FormModalUiHandler {
     return [{ label: i18next.t("menu:nickname") }];
   }
 
-  show(args: any[]): boolean {
-    if (super.show(args)) {
-      const config = args[0] as ModalConfig;
+  show(...args: [FormModalConfig, PlayerPokemon | string]): boolean {
+    if (super.show(args[0])) {
+      const config = args[0];
       if (args[1] && typeof (args[1] as PlayerPokemon).getNameToRender === "function") {
         this.inputs[0].text = (args[1] as PlayerPokemon).getNameToRender();
-      } else {
+      } else if (typeof args[1] === "string") {
         this.inputs[0].text = args[1];
       }
       this.submitAction = _ => {
