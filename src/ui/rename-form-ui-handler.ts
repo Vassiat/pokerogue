@@ -1,0 +1,55 @@
+import type { FormModalConfig, InputFieldConfig } from "./form-modal-ui-handler";
+import { FormModalUiHandler } from "./form-modal-ui-handler";
+import type { ModalConfig } from "./modal-ui-handler";
+import i18next from "i18next";
+import type { PlayerPokemon } from "#app/field/pokemon";
+
+export default class RenameFormUiHandler extends FormModalUiHandler {
+  getModalTitle(_config?: ModalConfig): string {
+    return i18next.t("menu:renamePokemon");
+  }
+
+  getWidth(_config?: ModalConfig): number {
+    return 160;
+  }
+
+  getMargin(_config?: ModalConfig): [number, number, number, number] {
+    return [0, 0, 48, 0];
+  }
+
+  getButtonLabels(_config?: ModalConfig): string[] {
+    return [i18next.t("menu:rename"), i18next.t("menu:cancel")];
+  }
+
+  getReadableErrorMessage(error: string): string {
+    const colonIndex = error?.indexOf(":");
+    if (colonIndex > 0) {
+      error = error.slice(0, colonIndex);
+    }
+
+    return super.getReadableErrorMessage(error);
+  }
+
+  override getInputFieldConfigs(): InputFieldConfig[] {
+    return [{ label: i18next.t("menu:nickname") }];
+  }
+
+  show(...args: [FormModalConfig, PlayerPokemon | string]): boolean {
+    if (super.show(args[0])) {
+      const config = args[0];
+      if (args[1] && typeof (args[1] as PlayerPokemon).getNameToRender === "function") {
+        this.inputs[0].text = (args[1] as PlayerPokemon).getNameToRender();
+      } else if (typeof args[1] === "string") {
+        this.inputs[0].text = args[1];
+      }
+      this.submitAction = _ => {
+        this.sanitizeInputs();
+        const sanitizedName = btoa(unescape(encodeURIComponent(this.inputs[0].text)));
+        config.buttonActions[0](sanitizedName);
+        return true;
+      };
+      return true;
+    }
+    return false;
+  }
+}
