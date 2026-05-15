@@ -1,5 +1,5 @@
 import { globalScene } from "#app/global-scene";
-import type UiHandler from "./ui-handler";
+import UiHandler from "./ui-handler";
 import BattleMessageUiHandler from "./battle-message-ui-handler";
 import CommandUiHandler from "./command-ui-handler";
 import PartyUiHandler from "./party-ui-handler";
@@ -150,10 +150,61 @@ const noTransitionModes = [
   Mode.RUN_INFO,
 ];
 
+function createHandlers() {
+  return {
+    [Mode.MESSAGE]: new BattleMessageUiHandler(),
+    [Mode.TITLE]: new TitleUiHandler(),
+    [Mode.COMMAND]: new CommandUiHandler(),
+    [Mode.FIGHT]: new FightUiHandler(),
+    [Mode.BALL]: new BallUiHandler(),
+    [Mode.TARGET_SELECT]: new TargetSelectUiHandler(),
+    [Mode.MODIFIER_SELECT]: new ModifierSelectUiHandler(),
+    [Mode.SAVE_SLOT]: new SaveSlotSelectUiHandler(),
+    [Mode.PARTY]: new PartyUiHandler(),
+    [Mode.SUMMARY]: new SummaryUiHandler(),
+    [Mode.STARTER_SELECT]: new StarterSelectUiHandler(),
+    [Mode.EVOLUTION_SCENE]: new EvolutionSceneHandler(),
+    [Mode.EGG_HATCH_SCENE]: new EggHatchSceneHandler(),
+    [Mode.EGG_HATCH_SUMMARY]: new EggSummaryUiHandler(),
+    [Mode.CONFIRM]: new ConfirmUiHandler(),
+    [Mode.OPTION_SELECT]: new OptionSelectUiHandler(),
+    [Mode.MENU]: new MenuUiHandler(),
+    [Mode.MENU_OPTION_SELECT]: new OptionSelectUiHandler(Mode.MENU_OPTION_SELECT),
+    [Mode.SETTINGS]: new SettingsUiHandler(),
+    [Mode.SETTINGS_DISPLAY]: new SettingsDisplayUiHandler(),
+    [Mode.SETTINGS_AUDIO]: new SettingsAudioUiHandler(),
+    [Mode.SETTINGS_GAMEPAD]: new SettingsGamepadUiHandler(),
+    [Mode.GAMEPAD_BINDING]: new GamepadBindingUiHandler(),
+    [Mode.SETTINGS_KEYBOARD]: new SettingsKeyboardUiHandler(),
+    [Mode.KEYBOARD_BINDING]: new KeyboardBindingUiHandler(),
+    [Mode.ACHIEVEMENTS]: new AchvsUiHandler(),
+    [Mode.GAME_STATS]: new GameStatsUiHandler(),
+    [Mode.EGG_LIST]: new EggListUiHandler(),
+    [Mode.EGG_GACHA]: new EggGachaUiHandler(),
+    [Mode.POKEDEX]: new PokedexUiHandler(),
+    [Mode.POKEDEX_SCAN]: new PokedexScanUiHandler(Mode.TEST_DIALOGUE),
+    [Mode.POKEDEX_PAGE]: new PokedexPageUiHandler(),
+    [Mode.LOGIN_FORM]: new LoginFormUiHandler(),
+    [Mode.REGISTRATION_FORM]: new RegistrationFormUiHandler(),
+    [Mode.LOADING]: new LoadingModalUiHandler(),
+    [Mode.SESSION_RELOAD]: new SessionReloadModalUiHandler(),
+    [Mode.UNAVAILABLE]: new UnavailableModalUiHandler(),
+    [Mode.CHALLENGE_SELECT]: new GameChallengesUiHandler(),
+    [Mode.RENAME_POKEMON]: new RenameFormUiHandler(),
+    [Mode.RUN_HISTORY]: new RunHistoryUiHandler(),
+    [Mode.RUN_INFO]: new RunInfoUiHandler(),
+    [Mode.TEST_DIALOGUE]: new TestDialogueUiHandler(Mode.TEST_DIALOGUE),
+    [Mode.AUTO_COMPLETE]: new AutoCompleteUiHandler(),
+    [Mode.ADMIN]: new AdminUiHandler(),
+    [Mode.MYSTERY_ENCOUNTER]: new MysteryEncounterUiHandler(),
+  } as const;
+}
+
+
 export default class UI extends Phaser.GameObjects.Container {
   private mode: Mode;
   private modeChain: Mode[];
-  public handlers: UiHandler[];
+  public handlers: ReturnType<typeof createHandlers>;
   private overlay: Phaser.GameObjects.Rectangle;
   public achvBar: AchvBar;
   public bgmBar: BgmBar;
@@ -171,59 +222,12 @@ export default class UI extends Phaser.GameObjects.Container {
 
     this.mode = Mode.MESSAGE;
     this.modeChain = [];
-    this.handlers = [
-      new BattleMessageUiHandler(),
-      new TitleUiHandler(),
-      new CommandUiHandler(),
-      new FightUiHandler(),
-      new BallUiHandler(),
-      new TargetSelectUiHandler(),
-      new ModifierSelectUiHandler(),
-      new SaveSlotSelectUiHandler(),
-      new PartyUiHandler(),
-      new SummaryUiHandler(),
-      new StarterSelectUiHandler(),
-      new EvolutionSceneHandler(),
-      new EggHatchSceneHandler(),
-      new EggSummaryUiHandler(),
-      new ConfirmUiHandler(),
-      new OptionSelectUiHandler(),
-      new MenuUiHandler(),
-      new OptionSelectUiHandler(Mode.MENU_OPTION_SELECT),
-      // settings
-      new SettingsUiHandler(),
-      new SettingsDisplayUiHandler(),
-      new SettingsAudioUiHandler(),
-      new SettingsGamepadUiHandler(),
-      new GamepadBindingUiHandler(),
-      new SettingsKeyboardUiHandler(),
-      new KeyboardBindingUiHandler(),
-      new AchvsUiHandler(),
-      new GameStatsUiHandler(),
-      new EggListUiHandler(),
-      new EggGachaUiHandler(),
-      new PokedexUiHandler(),
-      new PokedexScanUiHandler(Mode.TEST_DIALOGUE),
-      new PokedexPageUiHandler(),
-      new LoginFormUiHandler(),
-      new RegistrationFormUiHandler(),
-      new LoadingModalUiHandler(),
-      new SessionReloadModalUiHandler(),
-      new UnavailableModalUiHandler(),
-      new GameChallengesUiHandler(),
-      new RenameFormUiHandler(),
-      new RunHistoryUiHandler(),
-      new RunInfoUiHandler(),
-      new TestDialogueUiHandler(Mode.TEST_DIALOGUE),
-      new AutoCompleteUiHandler(),
-      new AdminUiHandler(),
-      new MysteryEncounterUiHandler(),
-    ];
+    this.handlers = createHandlers();
   }
 
   setup(): void {
     this.setName(`ui-${Mode[this.mode]}`);
-    for (const handler of this.handlers) {
+    for (const handler of Object.values(this.handlers)) {
       handler.setup();
     }
     this.overlay = globalScene.add.rectangle(
@@ -274,8 +278,8 @@ export default class UI extends Phaser.GameObjects.Container {
     globalScene.uiContainer.add(this.tooltipContainer);
   }
 
-  getHandler<H extends UiHandler = UiHandler>(): H {
-    return this.handlers[this.mode] as H;
+  getHandler<T extends keyof typeof this.handlers | typeof this.handlers[keyof typeof this.handlers] | UiHandler = UiHandler>(): T extends keyof typeof this.handlers ? typeof this.handlers[T] : T {
+    return this.handlers[this.mode] as T extends keyof typeof this.handlers ? typeof this.handlers[T] : T;
   }
 
   getMessageHandler(): BattleMessageUiHandler {
@@ -563,12 +567,12 @@ export default class UI extends Phaser.GameObjects.Container {
     });
   }
 
-  private setModeInternal(
-    mode: Mode,
+  private setModeInternal<T extends Mode>(
+    mode: T,
     clear: boolean,
     forceTransition: boolean,
     chainMode: boolean,
-    args: any[],
+    args?: Parameters<typeof this.handlers[T]["show"]>,
   ): Promise<void> {
     return new Promise(resolve => {
       if (this.mode === mode && !forceTransition) {
@@ -616,19 +620,19 @@ export default class UI extends Phaser.GameObjects.Container {
     return this.mode;
   }
 
-  setMode(mode: Mode, ...args: any[]): Promise<void> {
+  setMode<T extends Mode>(mode: T, ...args: [Parameters<typeof this.handlers[T]["show"]> | any]): Promise<void> {
     return this.setModeInternal(mode, true, false, false, args);
   }
 
-  setModeForceTransition(mode: Mode, ...args: any[]): Promise<void> {
+  setModeForceTransition<T extends Mode>(mode: T, ...args: [Parameters<typeof this.handlers[T]["show"]> | any]): Promise<void> {
     return this.setModeInternal(mode, true, true, false, args);
   }
 
-  setModeWithoutClear(mode: Mode, ...args: any[]): Promise<void> {
+  setModeWithoutClear<T extends Mode>(mode: T, ...args: [Parameters<typeof this.handlers[T]["show"]> | any]): Promise<void> {
     return this.setModeInternal(mode, false, false, false, args);
   }
 
-  setOverlayMode(mode: Mode, ...args: any[]): Promise<void> {
+  setOverlayMode<T extends Mode>(mode: T, ...args: [Parameters<typeof this.handlers[T]["show"]> | any]): Promise<void> {
     return this.setModeInternal(mode, false, false, true, args);
   }
 
@@ -701,8 +705,8 @@ export default class UI extends Phaser.GameObjects.Container {
    * and clears menus from {@linkcode NavigationManager} to prepare for reset
    */
   public freeUIData(): void {
-    this.handlers.forEach(h => h.destroy());
-    this.handlers = [];
+    Object.values(this.handlers).forEach(h => h.destroy());
+    this.handlers = {} as typeof this.handlers;
     NavigationManager.getInstance().clearNavigationMenus();
   }
 }

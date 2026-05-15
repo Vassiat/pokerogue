@@ -495,7 +495,7 @@ export default class BattleScene extends SceneBase {
     this.ui?.update();
   }
 
-  launchBattle() {
+  launchBattle(loadAssets: boolean = true) {
     this.arenaBg = this.add.sprite(0, 0, "plains_bg");
     this.arenaBg.setName("sprite-arena-bg");
     this.arenaBgTransition = this.add.sprite(0, 0, "plains_bg");
@@ -734,19 +734,26 @@ export default class BattleScene extends SceneBase {
 
     const defaultMoves = [Moves.TACKLE, Moves.TAIL_WHIP, Moves.FOCUS_ENERGY, Moves.STRUGGLE];
 
-    Promise.all([
-      Promise.all(loadPokemonAssets),
-      initCommonAnims().then(() => loadCommonAnimAssets(true)),
-      Promise.all([Moves.TACKLE, Moves.TAIL_WHIP, Moves.FOCUS_ENERGY, Moves.STRUGGLE].map(m => initMoveAnim(m))).then(
-        () => loadMoveAnimAssets(defaultMoves, true),
-      ),
-      this.initStarterColors(),
-    ]).then(() => {
+    if (loadAssets) {
+      Promise.all([
+        Promise.all(loadPokemonAssets),
+        initCommonAnims().then(() => loadCommonAnimAssets(true)),
+        Promise.all([Moves.TACKLE, Moves.TAIL_WHIP, Moves.FOCUS_ENERGY, Moves.STRUGGLE].map(m => initMoveAnim(m))).then(
+          () => loadMoveAnimAssets(defaultMoves, true),
+        ),
+        this.initStarterColors(),
+      ]).then(() => {
+        this.pushPhase(new LoginPhase());
+        this.pushPhase(new TitlePhase());
+  
+        this.shiftPhase();
+      });
+    } else {
       this.pushPhase(new LoginPhase());
       this.pushPhase(new TitlePhase());
-
+  
       this.shiftPhase();
-    });
+    }
   }
 
   initSession(): void {
@@ -1357,7 +1364,7 @@ export default class BattleScene extends SceneBase {
           this.uiContainer.destroy();
           this.children.removeAll(true);
           this.game.domContainer.innerHTML = "";
-          this.launchBattle();
+          this.launchBattle(false);
         },
       });
     }
