@@ -11,6 +11,7 @@ SPDX-License-Identifier: CC-BY-NC-SA-4.0
 [![Docs Coverage Static Badge](https://pagefaultgames.github.io/pokerogue/beta/coverage.svg)](https://pagefaultgames.github.io/pokerogue/beta)
 [![Biome Linting Static Badge](https://img.shields.io/badge/Linted_with-Biome-60a5fa?style=flat&logo=biome)](https://biomejs.dev)
 [![GNU AGPLv3 License Static Badge](https://img.shields.io/badge/License-AGPL_v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
+![Progress global](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2FVassiat%2Fpokerogue-locales%2Frefs%2Fheads%2Ftmp%2Fci%2Ftranslation-exporter%2Fdata-metrics%2Fmetrics.json&query=%24.average&label=localized&suffix=%25&color=brightgreen)
 </div>
 
 PokéRogue is a browser based Pokémon fangame heavily inspired by the roguelite genre. Battle endlessly while gathering stacking items, exploring many different biomes, fighting trainers, bosses, and more!
